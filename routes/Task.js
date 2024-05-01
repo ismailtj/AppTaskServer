@@ -1,5 +1,4 @@
 const taskController = require("../controllers/Task");
-const userController = require("../controllers/User");
 const verifyToken = require("../middleware/authMiddleware");
 const express = require("express");
 const router = express.Router();
@@ -16,14 +15,20 @@ router.get("/", verifyToken, async (req, res) => {
 
 router.post("/", verifyToken, async (req, res) => {
   try {
-    const { title, assignedToId } = req.body;
-    const newTask = await taskController.create(title);
-    console.log(newTask);
-    await userController.addTaskToUserByIds(
-      assignedToId,
-      newTask._id.toString()
-    );
+    const { title, user } = req.body;
+    await taskController.create(title, user);
     res.status(200).json({ message: "task Created" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get("/:id", verifyToken, (req, res) => {
+  const { id } = req.params;
+  try {
+    taskController.readOne(id);
+    res.status(200).json({ message: "task updated" });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -32,19 +37,21 @@ router.post("/", verifyToken, async (req, res) => {
 
 router.put("/:id", verifyToken, (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
+  const { title, done, user } = req.body;
+  console.log("editing task");
   try {
-    taskController.update(id, title);
+    taskController.update(id, title, done, user);
     res.status(200).json({ message: "task updated" });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
+
 router.delete("/:id", verifyToken, (req, res) => {
   const { id } = req.params;
   try {
-    taskController.delete(id);
+    taskController.supprimer(id);
     res.status(200).json({ message: "task deleted" });
   } catch (error) {
     console.error(error);

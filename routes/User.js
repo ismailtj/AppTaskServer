@@ -12,5 +12,15 @@ router.get("/", verifyToken, async (req, res) => {
     res.status(500).send(error);
   }
 });
+router.get("/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await userController.readOne(id);
+    res.status(200).json({ message: "Protected route accessed", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
 
 module.exports = router;

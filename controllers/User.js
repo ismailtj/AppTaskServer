@@ -7,7 +7,7 @@ exports.addTaskToUserByIds = async (userId, taskId) => {
 };
 
 exports.readOne = async (userId) => {
-  return await User.find(userId);
+  return await User.findById(userId);
 };
 
 exports.getAll = async () => {

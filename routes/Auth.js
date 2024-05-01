@@ -2,11 +2,12 @@ const User = require("../model/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const express = require("express");
+const verifyToken = require("../middleware/authMiddleware");
 const router = express.Router();
 
 // User registration
 
-router.post("/register", async (req, res) => {
+router.post("/register", verifyToken, async (req, res) => {
   try {
     const { username, password, admin } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,6 +27,7 @@ router.post("/register", async (req, res) => {
 // User login
 
 router.post("/login", async (req, res) => {
+  console.log("login hitted");
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -39,10 +41,14 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, "your-secret-key", {
       expiresIn: "1h",
     });
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (error) {
     res.status(500).json({ error: "Login failed" });
   }
+});
+
+router.get("/tokenValid", verifyToken, async (req, res) => {
+  res.status(200).json({ status: "OK" });
 });
 
 module.exports = router;
