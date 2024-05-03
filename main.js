@@ -7,11 +7,11 @@ const userRoutes = require("./routes/User");
 require("./middleware/db");
 
 // Define the CORS options
-const corsOptions = {
-  credentials: true,
-  origin: ["http://localhost:3000", "http://localhost:80"], // Whitelist the domains you want to allow
-};
-app.use(cors(corsOptions)); // Use the cors middleware with your options
+// const corsOptions = {
+//   credentials: true,
+//   origin: ["http://localhost:3000", "http://localhost:80", "*"], // Whitelist the domains you want to allow
+// };
+app.use(cors()); // Use the cors middleware with your options
 app.use(express.json());
 app.get("/", function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");

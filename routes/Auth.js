@@ -30,6 +30,7 @@ router.post("/login", async (req, res) => {
   console.log("login hitted");
   try {
     const { username, password } = req.body;
+    console.log(username + " - " + password);
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ error: "Authentication failed" });

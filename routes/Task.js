@@ -24,11 +24,11 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/:id", verifyToken, (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   try {
-    taskController.readOne(id);
-    res.status(200).json({ message: "task updated" });
+    const task = await taskController.readOne(id);
+    res.status(200).json({ task });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
